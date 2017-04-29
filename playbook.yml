@@ -24,17 +24,6 @@
     - name: update timezone
       shell: dpkg-reconfigure --frontend noninteractive tzdata
 
-    - name: Add User
-      user:
-        name: servak
-        shell: /usr/bin/zsh
-
-    - name: Set authorized key took from url
-      authorized_key:
-        user: servak
-        state: present
-        key: https://github.com/servak.keys
-
     - name: Install Build Package
       apt:
         name: "{{item}}"
@@ -78,3 +67,16 @@
       args:
         chdir: /usr/local/src
       when: not f.stat.exists
+
+    - name: Add User
+      user:
+        name: servak
+        shell: /usr/bin/zsh
+        groups: sudo,users,video
+        append: yes
+
+    - name: Set authorized key took from url
+      authorized_key:
+        user: servak
+        state: present
+        key: https://github.com/servak.keys
