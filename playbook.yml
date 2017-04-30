@@ -12,6 +12,13 @@
         - zsh
         - git
         - vim
+        - build-essential
+        - automake
+        - pkg-config
+        - pcscd
+        - libpcsclite-dev
+        - pcsc-tools
+        - unzip
 
     - name: Create Timezone file.
       copy:
@@ -23,19 +30,6 @@
 
     - name: update timezone
       shell: dpkg-reconfigure --frontend noninteractive tzdata
-
-    - name: Install Build Package
-      apt:
-        name: "{{item}}"
-        state: present
-      with_items:
-        - build-essential
-        - automake
-        - pkg-config
-        - pcscd
-        - libpcsclite-dev
-        - pcsc-tools
-        - unzip
 
     - name: set firmware
       stat: path=/usr/local/bin/b25
@@ -80,3 +74,11 @@
         user: servak
         state: present
         key: https://github.com/servak.keys
+
+    - name: Install Docker
+      stat: path=/usr/bin/docker
+      register: f
+
+    - shell: |
+        curl -sSL https://get.docker.com/ | sh
+      when: not f.stat.exists
